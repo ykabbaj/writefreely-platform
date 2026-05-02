@@ -1,8 +1,12 @@
 ARG WRITEFREELY_VERSION=0.16.0
 ARG GO_VERSION=1.25.9
+ARG LESS_VERSION=4.6.4
+ARG LESS_CLEAN_CSS_VERSION=1.6.0
 
 FROM golang:${GO_VERSION}-alpine3.22 AS builder
 ARG WRITEFREELY_VERSION
+ARG LESS_VERSION
+ARG LESS_CLEAN_CSS_VERSION
 RUN apk add --no-cache ca-certificates curl make nodejs npm tar
 WORKDIR /src/writefreely
 RUN curl -fsSL \
@@ -10,17 +14,17 @@ RUN curl -fsSL \
     -o /tmp/writefreely-source.tar.gz \
     && tar -xzf /tmp/writefreely-source.tar.gz -C /src/writefreely --strip-components=1
 RUN go build -v -o writefreely ./cmd/writefreely
-RUN npm install -g less less-plugin-clean-css \
-    && mkdir -p static/css \
-    && cd less \
-    && CSSDIR=../static/css \
-    && lessc app.less --clean-css="--s1 --advanced" "${CSSDIR}/write.css" \
-    && lessc fonts.less --clean-css="--s1 --advanced" "${CSSDIR}/fonts.css" \
-    && lessc icons.less --clean-css="--s1 --advanced" "${CSSDIR}/icons.css" \
-    && lessc prose.less --clean-css="--s1 --advanced" "${CSSDIR}/prose.css"
-RUN cd prose \
-    && npm install \
+RUN npm install -g "less@${LESS_VERSION}" "less-plugin-clean-css@${LESS_CLEAN_CSS_VERSION}" \
+    && mkdir -p static/css
+WORKDIR /src/writefreely/less
+RUN lessc app.less --clean-css="--s1 --advanced" ../static/css/write.css \
+    && lessc fonts.less --clean-css="--s1 --advanced" ../static/css/fonts.css \
+    && lessc icons.less --clean-css="--s1 --advanced" ../static/css/icons.css \
+    && lessc prose.less --clean-css="--s1 --advanced" ../static/css/prose.css
+WORKDIR /src/writefreely/prose
+RUN npm install \
     && NODE_OPTIONS=--openssl-legacy-provider npm run-script build
+WORKDIR /src/writefreely
 RUN rm -rf \
     less \
     prose/node_modules \
