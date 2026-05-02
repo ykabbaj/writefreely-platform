@@ -35,6 +35,7 @@ internet.
 - Review `docs/upgrade.md` before changing versions.
 - Review `docs/restore-test.md` before testing disaster recovery.
 - Review `docs/deployment.md` before the first VPS deployment.
+- Review `docs/security.md` when CI reports image vulnerabilities.
 
 ## Backups
 

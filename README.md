@@ -88,5 +88,6 @@ make restore BACKUP=backups/20260502T120000Z
 
 See `docs/production-checklist.md` before exposing the service publicly.
 See `docs/deployment.md` for a VPS deployment walkthrough.
+See `docs/security.md` for CI vulnerability scanning policy.
 See `docs/upgrade.md` before changing WriteFreely versions, and
 `docs/restore-test.md` for the restore verification procedure.
