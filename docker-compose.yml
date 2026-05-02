@@ -1,0 +1,104 @@
+name: writefreely
+
+services:
+  caddy:
+    image: caddy:2.10-alpine
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    depends_on:
+      writefreely:
+        condition: service_healthy
+    environment:
+      CADDY_SITE_ADDRESS: ${CADDY_SITE_ADDRESS:-https://localhost}
+    ports:
+      - "${HTTP_PORT:-80}:80"
+      - "${HTTPS_PORT:-443}:443"
+      - "${HTTPS_PORT:-443}:443/udp"
+    volumes:
+      - ./docker/caddy/Caddyfile:/etc/caddy/Caddyfile:ro,Z
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - public
+      - proxy
+
+  writefreely:
+    build:
+      context: .
+      dockerfile: docker/writefreely/Dockerfile
+      args:
+        WRITEFREELY_VERSION: ${WRITEFREELY_VERSION:-0.16.0}
+    restart: unless-stopped
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      WRITEFREELY_SITE_NAME: ${WRITEFREELY_SITE_NAME:-MyBlog}
+      WRITEFREELY_HOST: ${WRITEFREELY_HOST:-https://localhost}
+      WRITEFREELY_PORT: 8080
+      WRITEFREELY_DB_HOST: db
+      WRITEFREELY_DB_PORT: 3306
+      WRITEFREELY_DB_NAME: ${MYSQL_DATABASE:-writefreely}
+      WRITEFREELY_DB_USER: ${MYSQL_USER:-writefreely}
+      WRITEFREELY_DB_PASSWORD: ${MYSQL_PASSWORD:-writefreely}
+      WRITEFREELY_ADMIN_USER: ${WRITEFREELY_ADMIN_USER:-admin}
+      WRITEFREELY_ADMIN_PASSWORD: ${WRITEFREELY_ADMIN_PASSWORD:-changeme}
+      WRITEFREELY_OPEN_REGISTRATION: ${WRITEFREELY_OPEN_REGISTRATION:-false}
+      WRITEFREELY_SINGLE_USER: ${WRITEFREELY_SINGLE_USER:-false}
+      WRITEFREELY_FEDERATION: ${WRITEFREELY_FEDERATION:-false}
+      WRITEFREELY_PUBLIC_STATS: ${WRITEFREELY_PUBLIC_STATS:-false}
+    volumes:
+      - writefreely_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z 127.0.0.1 8080"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+    networks:
+      - proxy
+      - internal
+
+  db:
+    image: mysql:8.4
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-change-root-password}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-writefreely}
+      MYSQL_USER: ${MYSQL_USER:-writefreely}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-writefreely}
+      TZ: UTC
+    command:
+      - --character-set-server=latin1
+      - --collation-server=latin1_swedish_ci
+      - --default-time-zone=+00:00
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u$${MYSQL_USER} -p$${MYSQL_PASSWORD} --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+    networks:
+      - internal
+
+networks:
+  public:
+  proxy:
+    internal: true
+  internal:
+    internal: true
+
+volumes:
+  caddy_config:
+  caddy_data:
+  mysql_data:
+  writefreely_data:

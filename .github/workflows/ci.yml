@@ -1,0 +1,70 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  compose-and-shell:
+    name: Compose And Shell Checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate Compose file
+        run: docker compose config
+
+      - name: Check shell scripts
+        run: |
+          sh -n docker/writefreely/entrypoint.sh
+          sh -n scripts/backup.sh
+          sh -n scripts/restore.sh
+          sh -n scripts/sync-backups.sh
+
+      - name: Check Make targets render
+        run: |
+          make -n backup
+          make -n restore BACKUP=backups/example
+          make -n sync-backups BACKUP_REMOTE=example:writefreely
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Run ShellCheck
+        uses: ludeeus/action-shellcheck@master
+        with:
+          scandir: "./scripts"
+          additional_files: "docker/writefreely/entrypoint.sh"
+
+      - name: Run Hadolint
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: docker/writefreely/Dockerfile
+
+      - name: Run Yamllint
+        uses: ibiqlik/action-yamllint@v3
+        with:
+          file_or_dir: ".github/workflows docker-compose.yml .markdownlint.yml .yamllint.yml .hadolint.yaml"
+
+      - name: Run Markdownlint
+        uses: DavidAnson/markdownlint-cli2-action@v18
+        with:
+          globs: |
+            **/*.md
+
+  docker-build:
+    name: Docker Build Smoke Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Build WriteFreely image
+        run: docker compose build writefreely
