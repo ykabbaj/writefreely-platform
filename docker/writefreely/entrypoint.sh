@@ -26,27 +26,42 @@ hash_seed() {
 	head -c 32 /dev/urandom | base64
 }
 
-sed_escape() {
-	printf "%s" "$1" | sed 's/[&|\]/\\&/g'
-}
-
 set_config_value() {
-	key="$1"
-	padding="$2"
-	value="$3"
-	escaped_value="$(sed_escape "$value")"
-	sed -i "s|^${key}[[:space:]]*=.*|${key}${padding}= ${escaped_value}|" "$CONFIG_FILE"
+	section="$1"
+	key="$2"
+	padding="$3"
+	value="$4"
+	tmp="${CONFIG_FILE}.tmp"
+	line="${key}${padding}= ${value}"
+
+	awk -v section="[$section]" -v key="$key" -v line="$line" '
+		$0 ~ /^\[/ {
+			in_section = ($0 == section)
+		}
+		in_section && $0 ~ "^" key "[[:space:]]*=" {
+			print line
+			next
+		}
+		{ print }
+	' "$CONFIG_FILE" > "$tmp"
+	mv "$tmp" "$CONFIG_FILE"
 }
 
 sync_env_config() {
-	set_config_value "site_name" "             " "$site_name"
-	set_config_value "host" "                  " "$site_host"
-	set_config_value "single_user" "           " "$(bool "${WRITEFREELY_SINGLE_USER:-false}")"
-	set_config_value "open_registration" "     " "$(bool "${WRITEFREELY_OPEN_REGISTRATION:-false}")"
-	set_config_value "federation" "            " "$(bool "${WRITEFREELY_FEDERATION:-false}")"
-	set_config_value "public_stats" "          " "$(bool "${WRITEFREELY_PUBLIC_STATS:-false}")"
-	set_config_value "private" "               " "$(bool "${WRITEFREELY_PRIVATE:-false}")"
-	set_config_value "local_timeline" "        " "$(bool "${WRITEFREELY_LOCAL_TIMELINE:-false}")"
+	set_config_value "database" "username" " " "$db_user"
+	set_config_value "database" "password" " " "$db_password"
+	set_config_value "database" "database" " " "$db_name"
+	set_config_value "database" "host" "     " "$db_host"
+	set_config_value "database" "port" "     " "$db_port"
+
+	set_config_value "app" "site_name" "             " "$site_name"
+	set_config_value "app" "host" "                  " "$site_host"
+	set_config_value "app" "single_user" "           " "$(bool "${WRITEFREELY_SINGLE_USER:-false}")"
+	set_config_value "app" "open_registration" "     " "$(bool "${WRITEFREELY_OPEN_REGISTRATION:-false}")"
+	set_config_value "app" "federation" "            " "$(bool "${WRITEFREELY_FEDERATION:-false}")"
+	set_config_value "app" "public_stats" "          " "$(bool "${WRITEFREELY_PUBLIC_STATS:-false}")"
+	set_config_value "app" "private" "               " "$(bool "${WRITEFREELY_PRIVATE:-false}")"
+	set_config_value "app" "local_timeline" "        " "$(bool "${WRITEFREELY_LOCAL_TIMELINE:-false}")"
 }
 
 wait_for_database() {

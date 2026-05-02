@@ -1,4 +1,4 @@
-name: writefreely
+name: writefreely-platform
 
 services:
   caddy:

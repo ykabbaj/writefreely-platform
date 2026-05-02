@@ -3,7 +3,10 @@ DOCKER ?= docker
 BACKUP ?=
 BACKUP_REMOTE ?=
 
-.PHONY: up down restart logs ps build backup restore sync-backups config shell db-shell theme-path
+.PHONY: init up down restart logs ps build smoke-test backup restore restore-test sync-backups config shell db-shell theme-path
+
+init:
+	scripts/init.sh
 
 up:
 	$(COMPOSE) up -d
@@ -16,6 +19,9 @@ restart:
 
 build:
 	$(COMPOSE) build
+
+smoke-test:
+	COMPOSE="$(COMPOSE)" scripts/smoke-test.sh
 
 logs:
 	$(COMPOSE) logs -f --tail=200
@@ -32,6 +38,9 @@ backup:
 restore:
 	@if [ -z "$(BACKUP)" ]; then echo "Usage: make restore BACKUP=backups/<timestamp>"; exit 2; fi
 	COMPOSE="$(COMPOSE)" DOCKER="$(DOCKER)" BACKUP="$(BACKUP)" scripts/restore.sh
+
+restore-test:
+	COMPOSE="$(COMPOSE)" DOCKER="$(DOCKER)" scripts/restore-test.sh
 
 sync-backups:
 	@if [ -z "$(BACKUP_REMOTE)" ]; then echo "Usage: make sync-backups BACKUP_REMOTE=remote:path"; exit 2; fi

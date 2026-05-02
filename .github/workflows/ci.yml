@@ -20,14 +20,20 @@ jobs:
       - name: Check shell scripts
         run: |
           sh -n docker/writefreely/entrypoint.sh
+          sh -n scripts/init.sh
           sh -n scripts/backup.sh
           sh -n scripts/restore.sh
+          sh -n scripts/restore-test.sh
+          sh -n scripts/smoke-test.sh
           sh -n scripts/sync-backups.sh
 
       - name: Check Make targets render
         run: |
+          make -n init
           make -n backup
           make -n restore BACKUP=backups/example
+          make -n restore-test
+          make -n smoke-test
           make -n sync-backups BACKUP_REMOTE=example:writefreely
 
   lint:
@@ -68,3 +74,13 @@ jobs:
 
       - name: Build WriteFreely image
         run: docker compose build writefreely
+
+  smoke-test:
+    name: Runtime Smoke Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Start stack and verify HTTP response
+        run: make smoke-test

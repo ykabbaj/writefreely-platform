@@ -1,7 +1,7 @@
-# writefreely-docker
+# WriteFreely Platform
 
-This repository contains a Docker Compose deployment for running WriteFreely
-behind Caddy with a MySQL database.
+Production-oriented Docker Compose deployment for WriteFreely with Caddy,
+MySQL, backups, restore workflows, and CI checks.
 
 ## What Is Here
 
@@ -20,7 +20,7 @@ Copy the example environment file and change the passwords before exposing the
 service anywhere public:
 
 ```sh
-cp .env.example .env
+make init
 docker compose up --build
 ```
 
@@ -55,10 +55,13 @@ Useful shortcuts:
 make up
 make logs
 make backup
+make smoke-test
+make restore-test
 make sync-backups BACKUP_REMOTE=remote:path
 make restore BACKUP=backups/20260502T120000Z
 ```
 
 See `docs/production-checklist.md` before exposing the service publicly.
+See `docs/deployment.md` for a VPS deployment walkthrough.
 See `docs/upgrade.md` before changing WriteFreely versions, and
 `docs/restore-test.md` for the restore verification procedure.

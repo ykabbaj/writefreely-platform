@@ -1,8 +1,14 @@
 # Restore Test Procedure
 
 Use this to prove that backups can rebuild the blog from empty Docker volumes.
-Do this on a disposable host or when you are comfortable recreating the local
-stack.
+The automated path runs against a disposable Compose project:
+
+```sh
+make restore-test
+```
+
+The manual procedure below is useful when testing a specific production backup
+on a separate host.
 
 ## Create A Backup
 

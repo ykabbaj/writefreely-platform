@@ -32,6 +32,7 @@ internet.
 - Test restores periodically on a non-production host.
 - Review `docs/upgrade.md` before changing versions.
 - Review `docs/restore-test.md` before testing disaster recovery.
+- Review `docs/deployment.md` before the first VPS deployment.
 
 ## Backups
 

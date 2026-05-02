@@ -3,21 +3,35 @@ set -eu
 
 COMPOSE="${COMPOSE:-docker compose}"
 DOCKER="${DOCKER:-docker}"
-PROJECT_NAME="${COMPOSE_PROJECT_NAME:-$(basename "$PWD")}"
+PROJECT_NAME="${COMPOSE_PROJECT_NAME:-writefreely-platform}"
 BACKUP_ROOT="${BACKUP_ROOT:-backups}"
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
 BACKUP_DIR="${BACKUP_DIR:-${BACKUP_ROOT}/${STAMP}}"
 
-if [ -f .env ]; then
-	set -a
-	# shellcheck disable=SC1091
-	. ./.env
-	set +a
-fi
+env_default() {
+	key="$1"
+	default="$2"
+	eval "current=\${$key:-}"
 
-MYSQL_DATABASE="${MYSQL_DATABASE:-writefreely}"
-MYSQL_USER="${MYSQL_USER:-writefreely}"
-MYSQL_PASSWORD="${MYSQL_PASSWORD:-writefreely}"
+	if [ -n "$current" ]; then
+		printf "%s" "$current"
+		return
+	fi
+
+	if [ -f .env ]; then
+		value="$(awk -F= -v key="$key" '$0 !~ /^[[:space:]]*#/ && $1 == key { sub(/^[^=]*=/, ""); print; exit }' .env)"
+		if [ -n "$value" ]; then
+			printf "%s" "$value"
+			return
+		fi
+	fi
+
+	printf "%s" "$default"
+}
+
+MYSQL_DATABASE="$(env_default MYSQL_DATABASE writefreely)"
+MYSQL_USER="$(env_default MYSQL_USER writefreely)"
+MYSQL_PASSWORD="$(env_default MYSQL_PASSWORD writefreely)"
 HELPER_IMAGE="${HELPER_IMAGE:-caddy:2.10-alpine}"
 BACKUP_UID="${BACKUP_UID:-$(id -u)}"
 BACKUP_GID="${BACKUP_GID:-$(id -g)}"
