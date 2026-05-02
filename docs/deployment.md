@@ -60,6 +60,24 @@ WRITEFREELY_PUBLIC_STATS=false
 
 Keep `.env` out of git. It contains database and admin credentials.
 
+## Configuration Profiles
+
+The `profiles/` directory contains example mode presets:
+
+- `profiles/personal.env`: closed single-user blog.
+- `profiles/community.env`: public multi-user instance with federation.
+- `profiles/private.env`: private single-user journal.
+
+Apply a profile by layering it after `.env`:
+
+```sh
+cp profiles/personal.env .env.profile
+docker compose --env-file .env --env-file .env.profile up -d --build
+```
+
+For regular operation, copy the profile values you want into `.env` so `make`
+commands and direct Compose commands use the same settings.
+
 ## Start The Stack
 
 Start the services:
@@ -140,6 +158,8 @@ make restore-test
 The restore test uses a separate Compose project name and ports. It boots a
 disposable stack, creates a backup, deletes the test volumes, restores into
 fresh volumes, waits for the site to respond, and tears the test stack down.
+Successful test backups are removed automatically. Failed test backups are kept
+under `backups/restore-test/` for inspection.
 
 To keep the test stack for inspection:
 

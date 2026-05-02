@@ -1,7 +1,19 @@
 # WriteFreely Platform
 
+[![CI](../../actions/workflows/ci.yml/badge.svg)](../../actions/workflows/ci.yml)
+
 Production-oriented Docker Compose deployment for WriteFreely with Caddy,
 MySQL, backups, restore workflows, and CI checks.
+
+```mermaid
+flowchart LR
+    browser[Browser] --> caddy[Caddy: 80/443]
+    caddy --> app[WriteFreely: 8080]
+    app --> db[(MySQL)]
+    app --> appvol[(writefreely_data)]
+    caddy --> caddyvol[(caddy_data)]
+    db --> dbvol[(mysql_data)]
+```
 
 ## What Is Here
 
@@ -40,6 +52,19 @@ Then run:
 ```sh
 docker compose up -d --build
 ```
+
+You can start from one of the example profiles:
+
+```sh
+cp profiles/personal.env .env.profile
+docker compose --env-file .env --env-file .env.profile up -d --build
+```
+
+Available profiles:
+
+- `profiles/personal.env`: closed single-user blog.
+- `profiles/community.env`: public multi-user instance with federation.
+- `profiles/private.env`: private single-user journal.
 
 Caddy can automatically obtain and renew public HTTPS certificates when the
 domain resolves to the host and inbound ports `80` and `443` reach the Caddy

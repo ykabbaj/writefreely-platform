@@ -22,6 +22,8 @@ internet.
 - Use a long random `MYSQL_ROOT_PASSWORD`.
 - Use a long random `MYSQL_PASSWORD`.
 - Use a long random `WRITEFREELY_ADMIN_PASSWORD`.
+- Review profile presets in `profiles/` before choosing registration,
+  federation, and privacy settings.
 
 ## Operations
 

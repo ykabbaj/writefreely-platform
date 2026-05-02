@@ -7,6 +7,9 @@ The automated path runs against a disposable Compose project:
 make restore-test
 ```
 
+Successful automated test backups are removed. Failed test backups are kept
+under `backups/restore-test/` so the failed state can be inspected.
+
 The manual procedure below is useful when testing a specific production backup
 on a separate host.
 

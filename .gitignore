@@ -1,0 +1,12 @@
+.*
+!.gitignore
+!.env.example
+!.dockerignore
+!.hadolint.yaml
+!.markdownlint.yml
+!.yamllint.yml
+!.github/
+!.github/workflows/
+!.github/workflows/*.yml
+!.github/dependabot.yml
+backups/

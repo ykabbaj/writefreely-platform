@@ -1,0 +1,34 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    labels:
+      - dependencies
+      - ci
+    commit-message:
+      prefix: deps
+      include: scope
+
+  - package-ecosystem: docker-compose
+    directory: /
+    schedule:
+      interval: weekly
+    labels:
+      - dependencies
+      - containers
+    commit-message:
+      prefix: deps
+      include: scope
+
+  - package-ecosystem: docker
+    directory: /docker/writefreely
+    schedule:
+      interval: weekly
+    labels:
+      - dependencies
+      - containers
+    commit-message:
+      prefix: deps
+      include: scope
