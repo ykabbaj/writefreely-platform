@@ -3,7 +3,7 @@
 [![CI](../../actions/workflows/ci.yml/badge.svg)](../../actions/workflows/ci.yml)
 
 Production-oriented Docker Compose deployment for WriteFreely with Caddy,
-MySQL, backups, restore workflows, and CI checks.
+MySQL, source-built app images, backups, restore workflows, and CI checks.
 
 ```mermaid
 flowchart LR

@@ -70,6 +70,7 @@ wait_for_database() {
 		--port="$db_port" \
 		--user="$db_user" \
 		--password="$db_password" \
+		--ssl=0 \
 		--silent >/dev/null 2>&1; do
 		echo "Waiting for MySQL at ${db_host}:${db_port}..."
 		sleep 2

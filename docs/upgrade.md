@@ -1,6 +1,7 @@
 # Upgrade Procedure
 
-Use this process when changing `WRITEFREELY_VERSION` or any runtime dependency.
+Use this process when changing `WRITEFREELY_VERSION`, `GO_VERSION`, or any
+runtime dependency.
 
 ## Before Upgrading
 
@@ -25,7 +26,8 @@ Use this process when changing `WRITEFREELY_VERSION` or any runtime dependency.
 
 ## Upgrade
 
-1. Change `WRITEFREELY_VERSION` in `.env`.
+1. Change `WRITEFREELY_VERSION` in `.env`, or `GO_VERSION` in
+   `docker/writefreely/Dockerfile`.
 2. Rebuild the app image:
 
    ```sh

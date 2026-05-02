@@ -107,12 +107,12 @@ jobs:
           vuln-type: os
           severity: CRITICAL,HIGH
 
-      - name: Run Trivy upstream binary advisory scan
+      - name: Run Trivy library scanner
         uses: aquasecurity/trivy-action@0.35.0
         with:
           image-ref: writefreely-platform:${{ github.sha }}
           format: table
-          exit-code: "0"
+          exit-code: "1"
           ignore-unfixed: true
           vuln-type: library
           severity: CRITICAL,HIGH

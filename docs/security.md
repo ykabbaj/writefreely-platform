@@ -1,6 +1,7 @@
 # Security Scanning
 
-CI scans the custom WriteFreely image with Trivy in two passes.
+CI scans the custom source-built WriteFreely image with Trivy in two blocking
+passes.
 
 ## Blocking Scan
 
@@ -16,30 +17,26 @@ ignore-unfixed: true
 This repository controls the Alpine base image and packages installed in the
 runtime image, so fixed high and critical OS vulnerabilities should fail CI.
 
-## Advisory Scan
+## Library Scan
 
-The advisory scan checks application dependencies embedded in the upstream
-WriteFreely release binary:
+The library scan checks application dependencies embedded in the WriteFreely
+binary:
 
 ```yaml
 vuln-type: library
 severity: CRITICAL,HIGH
-exit-code: "0"
+exit-code: "1"
 ignore-unfixed: true
 ```
 
-The WriteFreely binary is downloaded from the official release tarball. If
-Trivy reports Go standard library CVEs in `/opt/writefreely/writefreely`, those
-findings need an upstream WriteFreely release rebuilt with a fixed Go toolchain,
-or a project decision to build WriteFreely from source in this image.
-
-The advisory scan stays visible in CI logs, but it does not block unrelated
-repository changes because this repository does not currently compile the
-WriteFreely binary.
+The image builds WriteFreely from the official source tag with the Go toolchain
+version pinned in `docker/writefreely/Dockerfile`. If Trivy reports Go standard
+library CVEs in `/opt/writefreely/writefreely`, update `GO_VERSION` to a patched
+Go release and rebuild the image.
 
 ## Response Policy
 
 - Fixed OS package vulnerabilities: update the base image or package versions.
-- Fixed upstream binary vulnerabilities: check for a newer WriteFreely release.
-- No fixed upstream release: document the exposure and decide whether to carry a
-  source-build image path.
+- Fixed Go standard library vulnerabilities: update `GO_VERSION`.
+- Fixed WriteFreely dependency vulnerabilities: check for a newer WriteFreely
+  release or evaluate whether the dependency can be patched safely.
