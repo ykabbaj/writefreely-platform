@@ -60,6 +60,10 @@ WRITEFREELY_PUBLIC_STATS=false
 
 Keep `.env` out of git. It contains database and admin credentials.
 
+`CADDY_SITE_ADDRESS` and `WRITEFREELY_HOST` must describe the same public host.
+WriteFreely uses `WRITEFREELY_HOST` when generating post links, so a mismatch
+will send readers to the wrong domain.
+
 For small VPS instances, also review `docs/vps.md` before first deploy. The
 extra notes cover host firewalls, package installation, root SSH, and swap for
 1 GB instances.

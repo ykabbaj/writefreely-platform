@@ -31,6 +31,7 @@ DEPLOY_SITE_ADDRESS="${DEPLOY_SITE_ADDRESS:-$(local_env_value CADDY_SITE_ADDRESS
 DEPLOY_HOST_URL="${DEPLOY_HOST_URL:-$(local_env_value WRITEFREELY_HOST)}"
 DEPLOY_SITE_NAME="${DEPLOY_SITE_NAME:-$(local_env_value WRITEFREELY_SITE_NAME)}"
 DEPLOY_ADMIN_USER="${DEPLOY_ADMIN_USER:-$(local_env_value WRITEFREELY_ADMIN_USER)}"
+DEPLOY_ADMIN_USER="${DEPLOY_ADMIN_USER:-owner}"
 DEPLOY_OPEN_REGISTRATION="${DEPLOY_OPEN_REGISTRATION:-$(local_env_value WRITEFREELY_OPEN_REGISTRATION)}"
 DEPLOY_SINGLE_USER="${DEPLOY_SINGLE_USER:-$(local_env_value WRITEFREELY_SINGLE_USER)}"
 DEPLOY_FEDERATION="${DEPLOY_FEDERATION:-$(local_env_value WRITEFREELY_FEDERATION)}"
@@ -49,6 +50,15 @@ if [ "$DEPLOY_SITE_ADDRESS" = "https://localhost" ] || [ "$DEPLOY_HOST_URL" = "h
 	echo "Refusing deploy with localhost site values from ${DEPLOY_ENV_FILE}." >&2
 	echo "Set production CADDY_SITE_ADDRESS and WRITEFREELY_HOST in ${DEPLOY_ENV_FILE}," >&2
 	echo "or override with DEPLOY_SITE_ADDRESS and DEPLOY_HOST_URL." >&2
+	exit 3
+fi
+
+expected_site_address="$(printf "%s" "$DEPLOY_HOST_URL" | sed 's#^https://##; s#^http://##')"
+if [ "$DEPLOY_SITE_ADDRESS" != "$expected_site_address" ]; then
+	echo "Refusing deploy with mismatched public host settings." >&2
+	echo "CADDY_SITE_ADDRESS=${DEPLOY_SITE_ADDRESS}" >&2
+	echo "WRITEFREELY_HOST=${DEPLOY_HOST_URL}" >&2
+	echo "Set CADDY_SITE_ADDRESS to the host part of WRITEFREELY_HOST." >&2
 	exit 3
 fi
 
@@ -124,7 +134,7 @@ set_env() {
 [ -n "$DEPLOY_SITE_ADDRESS" ] && set_env CADDY_SITE_ADDRESS "$DEPLOY_SITE_ADDRESS"
 [ -n "$DEPLOY_HOST_URL" ] && set_env WRITEFREELY_HOST "$DEPLOY_HOST_URL"
 [ -n "$DEPLOY_SITE_NAME" ] && set_env WRITEFREELY_SITE_NAME "$DEPLOY_SITE_NAME"
-[ -n "$DEPLOY_ADMIN_USER" ] && set_env WRITEFREELY_ADMIN_USER "$DEPLOY_ADMIN_USER"
+set_env WRITEFREELY_ADMIN_USER "$DEPLOY_ADMIN_USER"
 [ -n "$DEPLOY_OPEN_REGISTRATION" ] && set_env WRITEFREELY_OPEN_REGISTRATION "$DEPLOY_OPEN_REGISTRATION"
 [ -n "$DEPLOY_SINGLE_USER" ] && set_env WRITEFREELY_SINGLE_USER "$DEPLOY_SINGLE_USER"
 [ -n "$DEPLOY_FEDERATION" ] && set_env WRITEFREELY_FEDERATION "$DEPLOY_FEDERATION"
@@ -145,6 +155,15 @@ mysql_root_password="$(env_value MYSQL_ROOT_PASSWORD)"
 if [ "$site_address" = "https://localhost" ] || [ "$host_url" = "https://localhost" ]; then
 	echo "Refusing deploy with localhost site values." >&2
 	echo "Pass DEPLOY_SITE_ADDRESS=<domain> and DEPLOY_HOST_URL=https://<domain>." >&2
+	exit 3
+fi
+
+expected_site_address="$(printf "%s" "$host_url" | sed 's#^https://##; s#^http://##')"
+if [ "$site_address" != "$expected_site_address" ]; then
+	echo "Refusing deploy with mismatched public host settings." >&2
+	echo "CADDY_SITE_ADDRESS=${site_address}" >&2
+	echo "WRITEFREELY_HOST=${host_url}" >&2
+	echo "Set CADDY_SITE_ADDRESS to the host part of WRITEFREELY_HOST." >&2
 	exit 3
 fi
 

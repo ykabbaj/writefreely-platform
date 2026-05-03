@@ -10,6 +10,8 @@ internet.
   `blog.example.com`.
 - Set `WRITEFREELY_HOST` to the canonical HTTPS URL, for example
   `https://blog.example.com`.
+- Confirm both values refer to the same host. WriteFreely uses
+  `WRITEFREELY_HOST` for post links.
 - Make sure inbound TCP `80` and `443` reach the Caddy container.
 - Keep UDP `443` open when possible so Caddy can serve HTTP/3.
 - Check Caddy logs after first boot to confirm certificate issuance.

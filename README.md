@@ -47,6 +47,9 @@ CADDY_SITE_ADDRESS=blog.example.com
 WRITEFREELY_HOST=https://blog.example.com
 ```
 
+Both values must use the same host. `WRITEFREELY_HOST` is the canonical URL
+used in generated post links.
+
 Then run:
 
 ```sh
