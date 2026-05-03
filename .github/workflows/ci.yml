@@ -73,7 +73,7 @@ jobs:
           file_or_dir: ".github/workflows ansible docker-compose.yml .markdownlint.yml .yamllint.yml .hadolint.yaml"
 
       - name: Run Markdownlint
-        uses: DavidAnson/markdownlint-cli2-action@v18
+        uses: DavidAnson/markdownlint-cli2-action@v23
         with:
           globs: |
             **/*.md
