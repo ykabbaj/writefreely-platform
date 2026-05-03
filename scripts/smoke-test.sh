@@ -43,6 +43,25 @@ wait_for_site() {
 	done
 }
 
+check_security_headers() {
+	headers="$(curl -ksSI --max-time 5 "$SMOKE_URL" | tr -d '\r')"
+
+	printf "%s\n" "$headers" | grep -qi '^Strict-Transport-Security:' || {
+		echo "Missing Strict-Transport-Security header" >&2
+		return 1
+	}
+
+	printf "%s\n" "$headers" | grep -qi '^X-Content-Type-Options: nosniff$' || {
+		echo "Missing X-Content-Type-Options nosniff header" >&2
+		return 1
+	}
+
+	printf "%s\n" "$headers" | grep -qi '^X-Frame-Options: DENY$' || {
+		echo "Missing X-Frame-Options DENY header" >&2
+		return 1
+	}
+}
+
 trap cleanup EXIT INT TERM
 
 # shellcheck disable=SC2086
@@ -54,5 +73,6 @@ $COMPOSE up -d --build
 
 echo "Waiting for ${SMOKE_URL}"
 wait_for_site
+check_security_headers
 
 echo "Smoke test passed"

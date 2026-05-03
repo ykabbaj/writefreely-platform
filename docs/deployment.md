@@ -117,8 +117,7 @@ make logs
 
 The first boot creates `/data/config.ini`, initializes the MySQL schema,
 generates WriteFreely keys, runs migrations, and creates the configured admin
-user. On later starts, the entrypoint resets the configured admin password from
-`.env`, so `WRITEFREELY_ADMIN_PASSWORD` remains the recovery source of truth.
+user.
 
 Check service state:
 

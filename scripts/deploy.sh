@@ -196,6 +196,11 @@ fi
 echo "Pulling image"
 docker pull "$WRITEFREELY_IMAGE"
 
+if [ -n "$GHCR_USERNAME" ] && [ -n "$GHCR_TOKEN" ]; then
+	echo "Removing GHCR credentials"
+	docker logout ghcr.io >/dev/null 2>&1 || true
+fi
+
 echo "Starting stack"
 WRITEFREELY_IMAGE="$WRITEFREELY_IMAGE" make up
 

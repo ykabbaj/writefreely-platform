@@ -237,3 +237,16 @@
     enabled: true
     state: started
   when: ansible_os_family == "Debian"
+
+- name: Enable unattended security upgrades on Debian hosts
+  ansible.builtin.copy:
+    dest: /etc/apt/apt.conf.d/20auto-upgrades
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      APT::Periodic::Update-Package-Lists "1";
+      APT::Periodic::Unattended-Upgrade "1";
+  when:
+    - ansible_os_family == "Debian"
+    - server_setup_enable_auto_updates

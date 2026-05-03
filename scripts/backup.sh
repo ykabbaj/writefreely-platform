@@ -1,5 +1,6 @@
 #!/bin/sh
 set -eu
+umask 077
 
 COMPOSE="${COMPOSE:-docker compose}"
 DOCKER="${DOCKER:-docker}"
@@ -37,6 +38,7 @@ BACKUP_UID="${BACKUP_UID:-$(id -u)}"
 BACKUP_GID="${BACKUP_GID:-$(id -g)}"
 
 mkdir -p "$BACKUP_DIR"
+chmod 700 "$BACKUP_DIR"
 
 echo "Writing database backup to ${BACKUP_DIR}/mysql.sql"
 # shellcheck disable=SC2086
@@ -71,5 +73,6 @@ mysql_database=${MYSQL_DATABASE}
 writefreely_volume=${PROJECT_NAME}_writefreely_data
 caddy_volume=${PROJECT_NAME}_caddy_data
 EOF
+chmod 600 "${BACKUP_DIR}/manifest.txt"
 
 echo "Backup complete: ${BACKUP_DIR}"

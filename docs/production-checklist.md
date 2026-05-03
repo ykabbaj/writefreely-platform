@@ -15,6 +15,8 @@ internet.
 - Make sure inbound TCP `80` and `443` reach the Caddy container.
 - Keep UDP `443` open when possible so Caddy can serve HTTP/3.
 - Check Caddy logs after first boot to confirm certificate issuance.
+- Confirm HTTP response headers include HSTS and common browser hardening
+  headers.
 
 ## Secrets
 
@@ -24,6 +26,9 @@ internet.
 - Use a long random `MYSQL_ROOT_PASSWORD`.
 - Use a long random `MYSQL_PASSWORD`.
 - Use a long random `WRITEFREELY_ADMIN_PASSWORD`.
+- Use `owner` or another non-reserved admin username. Do not use `admin`.
+- Keep any `GHCR_TOKEN` out of shell history where possible and rotate it after
+  troubleshooting private package pulls.
 - Review profile presets in `profiles/` before choosing registration,
   federation, and privacy settings.
 
@@ -38,6 +43,8 @@ internet.
 - Review `docs/restore-test.md` before testing disaster recovery.
 - Review `docs/deployment.md` before the first VPS deployment.
 - Review `docs/security.md` when CI reports image vulnerabilities.
+- Keep host packages patched. The Ansible role enables unattended upgrades on
+  Debian/Ubuntu hosts.
 
 ## Backups
 
@@ -50,6 +57,8 @@ The backup script writes:
 
 Store copies away from the Docker host. The local `backups/` directory is useful
 for immediate recovery, but it is not a disaster recovery plan by itself.
+Backup directories are created with owner-only permissions because they contain
+database contents and application keys.
 
 To sync local backups off-host with `rclone`, configure an rclone remote and
 run:

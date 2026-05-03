@@ -229,15 +229,11 @@ if [ -n "${WRITEFREELY_ADMIN_USER:-}" ] && [ -n "${WRITEFREELY_ADMIN_PASSWORD:-}
 			if "$WRITEFREELY_BIN" -c "$CONFIG_FILE" user reset-pass "${WRITEFREELY_ADMIN_USER}:${WRITEFREELY_ADMIN_PASSWORD}"; then
 				touch "$ADMIN_MARKER"
 			else
-				echo "Admin password reset failed; leaving marker unset for retry on next start" >&2
+				echo "Admin bootstrap failed; run make admin-bootstrap after startup" >&2
 			fi
 		fi
 	else
-		echo "Resetting WriteFreely admin password for ${WRITEFREELY_ADMIN_USER}"
-		if ! "$WRITEFREELY_BIN" -c "$CONFIG_FILE" user reset-pass "${WRITEFREELY_ADMIN_USER}:${WRITEFREELY_ADMIN_PASSWORD}"; then
-			echo "Admin user missing; recreating ${WRITEFREELY_ADMIN_USER}"
-			"$WRITEFREELY_BIN" -c "$CONFIG_FILE" user create --admin "${WRITEFREELY_ADMIN_USER}:${WRITEFREELY_ADMIN_PASSWORD}"
-		fi
+		echo "WriteFreely admin bootstrap already completed"
 	fi
 	;;
 	esac
