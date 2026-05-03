@@ -1,0 +1,38 @@
+---
+server_setup_deploy_user: root
+server_setup_deploy_path: /opt/writefreely-platform
+server_setup_swap_file: /swapfile
+server_setup_swap_size: 2G
+
+server_setup_enable_firewall: true
+server_setup_enable_ssh_hardening: true
+server_setup_enable_sysctl_hardening: true
+
+server_setup_ssh_port: 22
+server_setup_ssh_service_name: "{{ 'ssh' if ansible_os_family == 'Debian' else 'sshd' }}"
+
+server_setup_debian_packages:
+  - ca-certificates
+  - curl
+  - git
+  - gnupg
+  - make
+  - ufw
+  - fail2ban
+  - unattended-upgrades
+
+server_setup_docker_debian_packages:
+  - docker-ce
+  - docker-ce-cli
+  - containerd.io
+  - docker-buildx-plugin
+  - docker-compose-plugin
+
+server_setup_redhat_packages:
+  - ca-certificates
+  - curl
+  - git
+  - make
+  - docker
+  - docker-compose-plugin
+  - firewalld

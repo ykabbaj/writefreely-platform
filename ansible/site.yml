@@ -1,0 +1,6 @@
+---
+- name: Prepare WriteFreely Platform VPS
+  hosts: writefreely
+  become: true
+  roles:
+    - server_setup

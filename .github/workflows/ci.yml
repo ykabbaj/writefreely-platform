@@ -24,6 +24,7 @@ jobs:
           sh -n docker/writefreely/entrypoint.sh
           sh -n scripts/init.sh
           sh -n scripts/backup.sh
+          sh -n scripts/deploy.sh
           sh -n scripts/restore.sh
           sh -n scripts/restore-test.sh
           sh -n scripts/smoke-test.sh
@@ -35,6 +36,9 @@ jobs:
           make -n backup
           make -n restore BACKUP=backups/example
           make -n restore-test
+          make -n deploy
+          make -n ansible-collections
+          make -n ansible-setup
           make -n release-check
           make -n dev-up
           make -n dev-backup
@@ -64,7 +68,7 @@ jobs:
       - name: Run Yamllint
         uses: ibiqlik/action-yamllint@v3
         with:
-          file_or_dir: ".github/workflows docker-compose.yml .markdownlint.yml .yamllint.yml .hadolint.yaml"
+          file_or_dir: ".github/workflows ansible docker-compose.yml .markdownlint.yml .yamllint.yml .hadolint.yaml"
 
       - name: Run Markdownlint
         uses: DavidAnson/markdownlint-cli2-action@v18

@@ -1,0 +1,15 @@
+---
+- name: Validate sshd config
+  ansible.builtin.command: sshd -t
+  changed_when: false
+  listen: Restart ssh
+
+- name: Restart ssh
+  ansible.builtin.service:
+    name: "{{ server_setup_ssh_service_name }}"
+    state: restarted
+  listen: Restart ssh
+
+- name: Reload sysctl
+  ansible.builtin.command: sysctl --system
+  changed_when: true

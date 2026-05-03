@@ -10,3 +10,4 @@
 !.github/workflows/*.yml
 !.github/dependabot.yml
 backups/
+ansible/inventory.yml

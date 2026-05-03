@@ -1,0 +1,7 @@
+---
+server_setup_deploy_user: root
+server_setup_deploy_path: /opt/writefreely-platform
+server_setup_swap_size: 2G
+server_setup_enable_firewall: true
+server_setup_enable_ssh_hardening: true
+server_setup_enable_sysctl_hardening: true

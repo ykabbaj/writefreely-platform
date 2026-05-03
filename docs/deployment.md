@@ -60,6 +60,10 @@ WRITEFREELY_PUBLIC_STATS=false
 
 Keep `.env` out of git. It contains database and admin credentials.
 
+For small VPS instances, also review `docs/vps.md` before first deploy. The
+extra notes cover host firewalls, package installation, root SSH, and swap for
+1 GB instances.
+
 ## Configuration Profiles
 
 The `profiles/` directory contains example mode presets:
@@ -233,3 +237,21 @@ make db-shell
 make backup
 make restore BACKUP=backups/<timestamp>
 ```
+
+## Remote Deploy
+
+After the VM has been prepared, deploy from your workstation with:
+
+```sh
+DEPLOY_HOST=<vm-public-ip> \
+SSH="ssh -i ~/.ssh/<key>" \
+WRITEFREELY_IMAGE=ghcr.io/ykabbaj/writefreely-platform:v0.1.1 \
+make deploy
+```
+
+The deploy command reads site settings from local `.env` and writes them to the
+remote `.env`. Use `DEPLOY_ENV_FILE=path/to/env` to deploy from a different env
+file, or pass `DEPLOY_SITE_ADDRESS` / `DEPLOY_HOST_URL` to override one run.
+
+The default SSH user is `root`. Use `DEPLOY_TARGET=user@host` when the SSH
+target is different.
