@@ -3,8 +3,8 @@ set -eu
 
 COMPOSE="${COMPOSE:-docker compose}"
 
-# shellcheck disable=SC2086
-$COMPOSE exec -T writefreely sh -eu -c '
+# shellcheck disable=SC2086,SC2016
+$COMPOSE exec -T writefreely sh -eu -s <<'CONTAINER_SCRIPT'
 	if [ -z "${WRITEFREELY_ADMIN_USER:-}" ] || [ -z "${WRITEFREELY_ADMIN_PASSWORD:-}" ]; then
 		echo "WRITEFREELY_ADMIN_USER and WRITEFREELY_ADMIN_PASSWORD must be set" >&2
 		exit 2
@@ -25,4 +25,4 @@ $COMPOSE exec -T writefreely sh -eu -c '
 		echo "Admin user does not exist; creating ${WRITEFREELY_ADMIN_USER}"
 		writefreely -c /data/config.ini user create --admin "$credential"
 	fi
-'
+CONTAINER_SCRIPT
