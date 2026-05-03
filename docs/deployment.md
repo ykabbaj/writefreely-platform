@@ -253,5 +253,16 @@ The deploy command reads site settings from local `.env` and writes them to the
 remote `.env`. Use `DEPLOY_ENV_FILE=path/to/env` to deploy from a different env
 file, or pass `DEPLOY_SITE_ADDRESS` / `DEPLOY_HOST_URL` to override one run.
 
+For authenticated GHCR pulls, pass a GitHub token with `read:packages`:
+
+```sh
+GHCR_USERNAME=<github-user> \
+GHCR_TOKEN=<github-token> \
+DEPLOY_HOST=<vm-public-ip> \
+SSH="ssh -i ~/.ssh/<key>" \
+WRITEFREELY_IMAGE=ghcr.io/ykabbaj/writefreely-platform:v0.1.1 \
+make deploy
+```
+
 The default SSH user is `root`. Use `DEPLOY_TARGET=user@host` when the SSH
 target is different.

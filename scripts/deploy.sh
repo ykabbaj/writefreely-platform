@@ -9,6 +9,8 @@ DEPLOY_REF="${DEPLOY_REF:-main}"
 DEPLOY_REPO="${DEPLOY_REPO:-https://github.com/ykabbaj/writefreely-platform.git}"
 WRITEFREELY_IMAGE="${WRITEFREELY_IMAGE:-ghcr.io/ykabbaj/writefreely-platform:latest}"
 DEPLOY_ENV_FILE="${DEPLOY_ENV_FILE:-.env}"
+GHCR_USERNAME="${GHCR_USERNAME:-}"
+GHCR_TOKEN="${GHCR_TOKEN:-}"
 SSH="${SSH:-ssh}"
 
 local_env_value() {
@@ -54,7 +56,7 @@ quote() {
 	printf "'%s'" "$(printf "%s" "$1" | sed "s/'/'\\\\''/g")"
 }
 
-remote_env="DEPLOY_PATH=$(quote "$DEPLOY_PATH") DEPLOY_REF=$(quote "$DEPLOY_REF") DEPLOY_REPO=$(quote "$DEPLOY_REPO") WRITEFREELY_IMAGE=$(quote "$WRITEFREELY_IMAGE") DEPLOY_SITE_ADDRESS=$(quote "$DEPLOY_SITE_ADDRESS") DEPLOY_HOST_URL=$(quote "$DEPLOY_HOST_URL") DEPLOY_SITE_NAME=$(quote "$DEPLOY_SITE_NAME") DEPLOY_ADMIN_USER=$(quote "$DEPLOY_ADMIN_USER") DEPLOY_OPEN_REGISTRATION=$(quote "$DEPLOY_OPEN_REGISTRATION") DEPLOY_SINGLE_USER=$(quote "$DEPLOY_SINGLE_USER") DEPLOY_FEDERATION=$(quote "$DEPLOY_FEDERATION") DEPLOY_PUBLIC_STATS=$(quote "$DEPLOY_PUBLIC_STATS")"
+remote_env="DEPLOY_PATH=$(quote "$DEPLOY_PATH") DEPLOY_REF=$(quote "$DEPLOY_REF") DEPLOY_REPO=$(quote "$DEPLOY_REPO") WRITEFREELY_IMAGE=$(quote "$WRITEFREELY_IMAGE") DEPLOY_SITE_ADDRESS=$(quote "$DEPLOY_SITE_ADDRESS") DEPLOY_HOST_URL=$(quote "$DEPLOY_HOST_URL") DEPLOY_SITE_NAME=$(quote "$DEPLOY_SITE_NAME") DEPLOY_ADMIN_USER=$(quote "$DEPLOY_ADMIN_USER") DEPLOY_OPEN_REGISTRATION=$(quote "$DEPLOY_OPEN_REGISTRATION") DEPLOY_SINGLE_USER=$(quote "$DEPLOY_SINGLE_USER") DEPLOY_FEDERATION=$(quote "$DEPLOY_FEDERATION") DEPLOY_PUBLIC_STATS=$(quote "$DEPLOY_PUBLIC_STATS") GHCR_USERNAME=$(quote "$GHCR_USERNAME") GHCR_TOKEN=$(quote "$GHCR_TOKEN")"
 
 echo "Deploying ${WRITEFREELY_IMAGE} to ${DEPLOY_TARGET}:${DEPLOY_PATH}"
 
@@ -154,6 +156,14 @@ esac
 
 echo "Rendering release Compose config"
 WRITEFREELY_IMAGE="$WRITEFREELY_IMAGE" make config >/dev/null
+
+if [ -n "$GHCR_USERNAME" ] && [ -n "$GHCR_TOKEN" ]; then
+	echo "Logging in to GHCR"
+	printf "%s" "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USERNAME" --password-stdin >/dev/null
+else
+	echo "Clearing stale GHCR credentials"
+	docker logout ghcr.io >/dev/null 2>&1 || true
+fi
 
 echo "Pulling image"
 docker pull "$WRITEFREELY_IMAGE"

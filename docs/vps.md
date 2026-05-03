@@ -119,6 +119,18 @@ WRITEFREELY_OPEN_REGISTRATION=false
 Use `DEPLOY_ENV_FILE=path/to/env` to deploy from a different env file, or pass
 `DEPLOY_SITE_ADDRESS` / `DEPLOY_HOST_URL` to override one run.
 
+If the registry requires authentication, pass a GitHub token with
+`read:packages`:
+
+```sh
+GHCR_USERNAME=<github-user> \
+GHCR_TOKEN=<github-token> \
+DEPLOY_HOST=<vm-public-ip> \
+SSH="ssh -i ~/.ssh/<key>" \
+WRITEFREELY_IMAGE=ghcr.io/ykabbaj/writefreely-platform:v0.1.1 \
+make deploy
+```
+
 If your SSH target is not `root@host`, use `DEPLOY_TARGET`:
 
 ```sh
