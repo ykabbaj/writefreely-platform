@@ -33,7 +33,7 @@ service anywhere public:
 
 ```sh
 make init
-docker compose up --build
+make up
 ```
 
 For local testing, the default Caddy address is `https://localhost`. Caddy will
@@ -50,30 +50,29 @@ WRITEFREELY_HOST=https://blog.example.com
 Then run:
 
 ```sh
-docker compose up -d --build
+make up
 ```
 
-To run from a published GHCR image instead of building locally:
+By default, Make targets use the published GHCR image. Pin a specific image
+with:
 
 ```sh
-GHCR_OWNER=your-github-user docker compose -f docker-compose.yml -f docker-compose.release.yml up -d
+WRITEFREELY_IMAGE=ghcr.io/ykabbaj/writefreely-platform:v0.1.0 make up
 ```
 
-Or use the release-aware Make targets:
+For local image development, use the `dev-*` targets:
 
 ```sh
-WRITEFREELY_IMAGE=ghcr.io/ykabbaj/writefreely-platform:v0.1.0 make release-up
-make release-smoke-test
-make release-backup
-make release-restore BACKUP=backups/20260502T120000Z
-make release-restore-test
+make dev-up
+make dev-build
+make dev-smoke-test
 ```
 
 You can start from one of the example profiles:
 
 ```sh
 cp profiles/personal.env .env.profile
-docker compose --env-file .env --env-file .env.profile up -d --build
+docker compose --env-file .env --env-file .env.profile -f docker-compose.yml -f docker-compose.release.yml up -d
 ```
 
 Available profiles:

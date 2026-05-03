@@ -57,6 +57,10 @@ The WriteFreely image is built from the official source tag:
 Building from source lets the platform move to patched Go releases before
 upstream publishes a rebuilt release tarball.
 
+Default Make targets run the published GHCR image through
+`docker-compose.release.yml`. Local source-build workflows use the `dev-*`
+targets and plain `docker-compose.yml`.
+
 ## Startup Flow
 
 1. MySQL starts and reports healthy.

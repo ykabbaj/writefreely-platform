@@ -15,7 +15,7 @@ runtime dependency.
 3. Create a backup:
 
    ```sh
-   make backup COMPOSE="sudo docker compose" DOCKER="sudo docker"
+   make backup DOCKER="sudo docker"
    ```
 
 4. Sync the backup off-host if an rclone remote is configured:
@@ -24,26 +24,42 @@ runtime dependency.
    make sync-backups BACKUP_REMOTE=remote:path
    ```
 
-## Upgrade
+## Upgrade Published Image
+
+1. Update the image tag used by the deployment:
+
+   ```sh
+   WRITEFREELY_IMAGE=ghcr.io/ykabbaj/writefreely-platform:v0.1.0 make up
+   ```
+
+2. Watch logs until the app is healthy:
+
+   ```sh
+   make logs
+   ```
+
+3. Verify the site in a browser.
+
+## Upgrade Local Image Build
 
 1. Change `WRITEFREELY_VERSION` in `.env`, or `GO_VERSION` in
    `docker/writefreely/Dockerfile`.
 2. Rebuild the app image:
 
    ```sh
-   make build COMPOSE="sudo docker compose"
+   make dev-build
    ```
 
 3. Recreate the services:
 
    ```sh
-   make up COMPOSE="sudo docker compose"
+   make dev-up
    ```
 
 4. Watch logs until the app is healthy:
 
    ```sh
-   make logs COMPOSE="sudo docker compose"
+   make logs
    ```
 
 5. Verify the site in a browser.
@@ -59,15 +75,15 @@ runtime dependency.
 2. Rebuild and restart:
 
    ```sh
-   make build COMPOSE="sudo docker compose"
-   make up COMPOSE="sudo docker compose"
+   make dev-build
+   make dev-up
    ```
 
 3. If the upgrade changed data in a bad way, restore the backup taken before
    the upgrade:
 
    ```sh
-   make restore BACKUP=backups/<timestamp> COMPOSE="sudo docker compose" DOCKER="sudo docker"
+   make restore BACKUP=backups/<timestamp> DOCKER="sudo docker"
    ```
 
 Keep the pre-upgrade backup until the upgraded site has run cleanly for a few

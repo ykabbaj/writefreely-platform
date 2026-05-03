@@ -15,7 +15,9 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Validate Compose file
-        run: docker compose config
+        run: |
+          docker compose config
+          docker compose -f docker-compose.yml -f docker-compose.release.yml config
 
       - name: Check shell scripts
         run: |
@@ -34,10 +36,10 @@ jobs:
           make -n restore BACKUP=backups/example
           make -n restore-test
           make -n release-check
-          make -n release-up
-          make -n release-backup
-          make -n release-restore BACKUP=backups/example
-          make -n release-restore-test
+          make -n dev-up
+          make -n dev-backup
+          make -n dev-restore BACKUP=backups/example
+          make -n dev-restore-test
           make -n smoke-test
           make -n sync-backups BACKUP_REMOTE=example:writefreely
 
@@ -88,7 +90,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Start stack and verify HTTP response
-        run: make smoke-test
+        run: make dev-smoke-test
 
   security:
     name: Security Scan

@@ -1,10 +1,11 @@
-COMPOSE ?= docker compose
+DEV_COMPOSE ?= docker compose
 RELEASE_COMPOSE ?= docker compose -f docker-compose.yml -f docker-compose.release.yml
+COMPOSE ?= $(RELEASE_COMPOSE)
 DOCKER ?= docker
 BACKUP ?=
 BACKUP_REMOTE ?=
 
-.PHONY: init up down restart logs ps build smoke-test backup restore restore-test sync-backups config release-check release-up release-logs release-ps release-smoke-test release-backup release-restore release-restore-test shell db-shell theme-path
+.PHONY: init up down restart logs ps build smoke-test backup restore restore-test sync-backups config release-check dev-up dev-down dev-restart dev-build dev-smoke-test dev-backup dev-restore dev-restore-test shell db-shell theme-path
 
 init:
 	scripts/init.sh
@@ -19,7 +20,7 @@ restart:
 	$(COMPOSE) up -d --force-recreate
 
 build:
-	$(COMPOSE) build
+	$(MAKE) dev-build
 
 smoke-test:
 	COMPOSE="$(COMPOSE)" scripts/smoke-test.sh
@@ -34,7 +35,8 @@ config:
 	$(COMPOSE) config
 
 release-check:
-	$(COMPOSE) config
+	$(DEV_COMPOSE) config
+	$(RELEASE_COMPOSE) config
 	sh -n docker/writefreely/entrypoint.sh
 	sh -n scripts/init.sh
 	sh -n scripts/backup.sh
@@ -42,30 +44,33 @@ release-check:
 	sh -n scripts/restore-test.sh
 	sh -n scripts/smoke-test.sh
 	sh -n scripts/sync-backups.sh
-	$(MAKE) smoke-test
-	$(MAKE) restore-test
+	$(MAKE) dev-smoke-test
+	$(MAKE) dev-restore-test
 
-release-up:
-	$(RELEASE_COMPOSE) up -d
+dev-up:
+	$(DEV_COMPOSE) up -d --build
 
-release-logs:
-	$(RELEASE_COMPOSE) logs -f --tail=200
+dev-down:
+	$(DEV_COMPOSE) down
 
-release-ps:
-	$(RELEASE_COMPOSE) ps
+dev-restart:
+	$(DEV_COMPOSE) up -d --build --force-recreate
 
-release-smoke-test:
-	COMPOSE="$(RELEASE_COMPOSE)" scripts/smoke-test.sh
+dev-build:
+	$(DEV_COMPOSE) build
 
-release-backup:
-	COMPOSE="$(RELEASE_COMPOSE)" DOCKER="$(DOCKER)" scripts/backup.sh
+dev-smoke-test:
+	COMPOSE="$(DEV_COMPOSE)" scripts/smoke-test.sh
 
-release-restore:
-	@if [ -z "$(BACKUP)" ]; then echo "Usage: make release-restore BACKUP=backups/<timestamp>"; exit 2; fi
-	COMPOSE="$(RELEASE_COMPOSE)" DOCKER="$(DOCKER)" BACKUP="$(BACKUP)" scripts/restore.sh
+dev-backup:
+	COMPOSE="$(DEV_COMPOSE)" DOCKER="$(DOCKER)" scripts/backup.sh
 
-release-restore-test:
-	COMPOSE="$(RELEASE_COMPOSE)" DOCKER="$(DOCKER)" scripts/restore-test.sh
+dev-restore:
+	@if [ -z "$(BACKUP)" ]; then echo "Usage: make dev-restore BACKUP=backups/<timestamp>"; exit 2; fi
+	COMPOSE="$(DEV_COMPOSE)" DOCKER="$(DOCKER)" BACKUP="$(BACKUP)" scripts/restore.sh
+
+dev-restore-test:
+	COMPOSE="$(DEV_COMPOSE)" DOCKER="$(DOCKER)" scripts/restore-test.sh
 
 backup:
 	COMPOSE="$(COMPOSE)" DOCKER="$(DOCKER)" scripts/backup.sh

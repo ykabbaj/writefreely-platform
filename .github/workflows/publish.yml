@@ -72,9 +72,13 @@ jobs:
 
       - name: Run smoke test
         run: make smoke-test
+        env:
+          WRITEFREELY_IMAGE: writefreely-platform:${{ github.sha }}
 
       - name: Run restore test
         run: make restore-test
+        env:
+          WRITEFREELY_IMAGE: writefreely-platform:${{ github.sha }}
 
       - name: Log in to GHCR
         uses: docker/login-action@v3

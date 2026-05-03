@@ -9,6 +9,12 @@ Use this before tagging or pushing operational changes.
   ```
 
 - Run `docker compose config`.
+- Run the release-image compose config:
+
+  ```sh
+  docker compose -f docker-compose.yml -f docker-compose.release.yml config
+  ```
+
 - Run shell syntax checks:
 
   ```sh
@@ -28,14 +34,24 @@ Use this before tagging or pushing operational changes.
   make -n backup
   make -n restore BACKUP=backups/example
   make -n restore-test
+  make -n dev-build
+  make -n dev-restore BACKUP=backups/example
+  make -n dev-restore-test
   make -n smoke-test
   make -n sync-backups BACKUP_REMOTE=example:writefreely
   ```
 
-- Run the runtime smoke test:
+- Run the runtime smoke test against the published image:
 
   ```sh
   make smoke-test
+  ```
+
+- Run local image checks before tagging source-build changes:
+
+  ```sh
+  make dev-smoke-test
+  make dev-restore-test
   ```
 
 - Confirm GitHub Actions passes on the pushed branch.

@@ -69,6 +69,7 @@ make sync-backups BACKUP_REMOTE=backup-server:/srv/backups/writefreely
 - Read the WriteFreely release notes before changing `WRITEFREELY_VERSION`.
 - Run `make backup`.
 - Change `WRITEFREELY_VERSION` in `.env`.
-- Run `make build`.
-- Run `make up`.
+- Build and test local image changes with `make dev-build` and
+  `make dev-smoke-test`.
+- Publish a new image tag through CI, then deploy it with `make up`.
 - Check logs and the site before removing older backups.

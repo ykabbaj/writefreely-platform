@@ -72,7 +72,7 @@ Apply a profile by layering it after `.env`:
 
 ```sh
 cp profiles/personal.env .env.profile
-docker compose --env-file .env --env-file .env.profile up -d --build
+docker compose --env-file .env --env-file .env.profile -f docker-compose.yml -f docker-compose.release.yml up -d
 ```
 
 For regular operation, copy the profile values you want into `.env` so `make`
@@ -86,18 +86,19 @@ Start the services:
 make up
 ```
 
-To deploy a published GHCR image instead of building on the host:
+By default, Make targets use the published GHCR image. Pin a specific image
+with:
 
 ```sh
-GHCR_OWNER=your-github-user docker compose -f docker-compose.yml -f docker-compose.release.yml up -d
+WRITEFREELY_IMAGE=ghcr.io/ykabbaj/writefreely-platform:v0.1.0 make up
 ```
 
-The same release compose override is available through Make targets:
+Use `dev-*` targets only when testing local Dockerfile or entrypoint changes:
 
 ```sh
-WRITEFREELY_IMAGE=ghcr.io/ykabbaj/writefreely-platform:v0.1.0 make release-up
-make release-ps
-make release-logs
+make dev-up
+make dev-build
+make dev-smoke-test
 ```
 
 Watch startup logs:
@@ -169,10 +170,10 @@ Run an end-to-end restore check:
 make restore-test
 ```
 
-When validating the published GHCR image, run the release-aware restore test:
+When validating local image changes, run the dev restore test instead:
 
 ```sh
-WRITEFREELY_IMAGE=ghcr.io/ykabbaj/writefreely-platform:v0.1.0 make release-restore-test
+make dev-restore-test
 ```
 
 The restore test uses a separate Compose project name and ports. It boots a
@@ -196,11 +197,11 @@ make backup
 make sync-backups BACKUP_REMOTE=remote:path
 ```
 
-Then edit `.env`, rebuild, and restart:
+Then edit `.env`, rebuild, and restart from the local source-built image:
 
 ```sh
-make build
-make up
+make dev-build
+make dev-up
 make logs
 ```
 
