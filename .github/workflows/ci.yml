@@ -99,7 +99,7 @@ jobs:
         run: docker build -f docker/writefreely/Dockerfile -t writefreely-platform:${{ github.sha }} .
 
       - name: Run Trivy OS package scanner
-        uses: aquasecurity/trivy-action@0.35.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: writefreely-platform:${{ github.sha }}
           format: table
@@ -109,7 +109,7 @@ jobs:
           severity: CRITICAL,HIGH
 
       - name: Run Trivy library scanner
-        uses: aquasecurity/trivy-action@0.35.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: writefreely-platform:${{ github.sha }}
           format: table
