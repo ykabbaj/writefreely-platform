@@ -86,6 +86,12 @@ Start the services:
 make up
 ```
 
+To deploy a published GHCR image instead of building on the host:
+
+```sh
+GHCR_OWNER=your-github-user docker compose -f docker-compose.yml -f docker-compose.release.yml up -d
+```
+
 Watch startup logs:
 
 ```sh

@@ -1,0 +1,4 @@
+services:
+  writefreely:
+    image: ${WRITEFREELY_IMAGE:-ghcr.io/${GHCR_OWNER:-ykabbaj}/writefreely-platform:latest}
+    build: !reset null

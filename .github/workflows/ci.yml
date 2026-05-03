@@ -33,6 +33,7 @@ jobs:
           make -n backup
           make -n restore BACKUP=backups/example
           make -n restore-test
+          make -n release-check
           make -n smoke-test
           make -n sync-backups BACKUP_REMOTE=example:writefreely
 

@@ -3,7 +3,7 @@ DOCKER ?= docker
 BACKUP ?=
 BACKUP_REMOTE ?=
 
-.PHONY: init up down restart logs ps build smoke-test backup restore restore-test sync-backups config shell db-shell theme-path
+.PHONY: init up down restart logs ps build smoke-test backup restore restore-test sync-backups config release-check shell db-shell theme-path
 
 init:
 	scripts/init.sh
@@ -31,6 +31,18 @@ ps:
 
 config:
 	$(COMPOSE) config
+
+release-check:
+	$(COMPOSE) config
+	sh -n docker/writefreely/entrypoint.sh
+	sh -n scripts/init.sh
+	sh -n scripts/backup.sh
+	sh -n scripts/restore.sh
+	sh -n scripts/restore-test.sh
+	sh -n scripts/smoke-test.sh
+	sh -n scripts/sync-backups.sh
+	$(MAKE) smoke-test
+	$(MAKE) restore-test
 
 backup:
 	COMPOSE="$(COMPOSE)" DOCKER="$(DOCKER)" scripts/backup.sh

@@ -1,0 +1,17 @@
+name: Scheduled Restore Test
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 4 * * 1"
+
+jobs:
+  restore-test:
+    name: Restore Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Run restore test
+        run: make restore-test

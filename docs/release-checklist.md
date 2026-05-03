@@ -2,6 +2,12 @@
 
 Use this before tagging or pushing operational changes.
 
+- Run the complete local release check:
+
+  ```sh
+  make release-check
+  ```
+
 - Run `docker compose config`.
 - Run shell syntax checks:
 

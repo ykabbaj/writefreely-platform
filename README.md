@@ -53,6 +53,12 @@ Then run:
 docker compose up -d --build
 ```
 
+To run from a published GHCR image instead of building locally:
+
+```sh
+GHCR_OWNER=your-github-user docker compose -f docker-compose.yml -f docker-compose.release.yml up -d
+```
+
 You can start from one of the example profiles:
 
 ```sh
@@ -87,6 +93,7 @@ make restore BACKUP=backups/20260502T120000Z
 ```
 
 See `docs/production-checklist.md` before exposing the service publicly.
+See `docs/architecture.md` for the runtime and CI/CD design.
 See `docs/deployment.md` for a VPS deployment walkthrough.
 See `docs/security.md` for CI vulnerability scanning policy.
 See `docs/upgrade.md` before changing WriteFreely versions, and
