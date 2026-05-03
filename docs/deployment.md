@@ -113,7 +113,8 @@ make logs
 
 The first boot creates `/data/config.ini`, initializes the MySQL schema,
 generates WriteFreely keys, runs migrations, and creates the configured admin
-user.
+user. On later starts, the entrypoint resets the configured admin password from
+`.env`, so `WRITEFREELY_ADMIN_PASSWORD` remains the recovery source of truth.
 
 Check service state:
 
@@ -122,6 +123,16 @@ make ps
 ```
 
 Then open the configured `WRITEFREELY_HOST` in a browser.
+
+If the configured admin account is missing or the password is out of sync with
+`.env`, repair it with:
+
+```sh
+make admin-bootstrap
+```
+
+Do not use `admin` as `WRITEFREELY_ADMIN_USER`; WriteFreely treats it as a
+reserved username. Use a value such as `owner`.
 
 ## Local Runtime Verification
 

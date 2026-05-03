@@ -6,7 +6,7 @@ BACKUP ?=
 BACKUP_REMOTE ?=
 ANSIBLE_INVENTORY ?= ansible/inventory.yml
 
-.PHONY: init up down restart logs ps build smoke-test backup restore restore-test sync-backups deploy ansible-collections ansible-setup config release-check dev-up dev-down dev-restart dev-build dev-smoke-test dev-backup dev-restore dev-restore-test shell db-shell theme-path
+.PHONY: init up down restart logs ps build smoke-test backup restore restore-test sync-backups admin-bootstrap deploy ansible-collections ansible-setup config release-check dev-up dev-down dev-restart dev-build dev-smoke-test dev-backup dev-restore dev-restore-test shell db-shell theme-path
 
 init:
 	scripts/init.sh
@@ -86,6 +86,9 @@ restore-test:
 sync-backups:
 	@if [ -z "$(BACKUP_REMOTE)" ]; then echo "Usage: make sync-backups BACKUP_REMOTE=remote:path"; exit 2; fi
 	BACKUP_REMOTE="$(BACKUP_REMOTE)" scripts/sync-backups.sh
+
+admin-bootstrap:
+	COMPOSE="$(COMPOSE)" scripts/admin-bootstrap.sh
 
 deploy:
 	scripts/deploy.sh

@@ -214,10 +214,33 @@ fi
 echo "Running WriteFreely database migrations"
 "$WRITEFREELY_BIN" -c "$CONFIG_FILE" db migrate
 
-if [ -n "${WRITEFREELY_ADMIN_USER:-}" ] && [ -n "${WRITEFREELY_ADMIN_PASSWORD:-}" ] && [ ! -f "$ADMIN_MARKER" ]; then
-	echo "Creating WriteFreely admin user ${WRITEFREELY_ADMIN_USER}"
-	"$WRITEFREELY_BIN" -c "$CONFIG_FILE" user create --admin "${WRITEFREELY_ADMIN_USER}:${WRITEFREELY_ADMIN_PASSWORD}" || true
-	touch "$ADMIN_MARKER"
+if [ -n "${WRITEFREELY_ADMIN_USER:-}" ] && [ -n "${WRITEFREELY_ADMIN_PASSWORD:-}" ]; then
+	case "$WRITEFREELY_ADMIN_USER" in
+		admin|Admin|ADMIN)
+			echo "admin is a reserved WriteFreely username; set WRITEFREELY_ADMIN_USER to another value" >&2
+			;;
+	*)
+	if [ ! -f "$ADMIN_MARKER" ]; then
+		echo "Creating WriteFreely admin user ${WRITEFREELY_ADMIN_USER}"
+		if "$WRITEFREELY_BIN" -c "$CONFIG_FILE" user create --admin "${WRITEFREELY_ADMIN_USER}:${WRITEFREELY_ADMIN_PASSWORD}"; then
+			touch "$ADMIN_MARKER"
+		else
+			echo "Admin user creation failed; attempting password reset for ${WRITEFREELY_ADMIN_USER}"
+			if "$WRITEFREELY_BIN" -c "$CONFIG_FILE" user reset-pass "${WRITEFREELY_ADMIN_USER}:${WRITEFREELY_ADMIN_PASSWORD}"; then
+				touch "$ADMIN_MARKER"
+			else
+				echo "Admin password reset failed; leaving marker unset for retry on next start" >&2
+			fi
+		fi
+	else
+		echo "Resetting WriteFreely admin password for ${WRITEFREELY_ADMIN_USER}"
+		if ! "$WRITEFREELY_BIN" -c "$CONFIG_FILE" user reset-pass "${WRITEFREELY_ADMIN_USER}:${WRITEFREELY_ADMIN_PASSWORD}"; then
+			echo "Admin user missing; recreating ${WRITEFREELY_ADMIN_USER}"
+			"$WRITEFREELY_BIN" -c "$CONFIG_FILE" user create --admin "${WRITEFREELY_ADMIN_USER}:${WRITEFREELY_ADMIN_PASSWORD}"
+		fi
+	fi
+	;;
+	esac
 fi
 
 exec "$@"

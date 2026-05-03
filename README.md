@@ -87,7 +87,9 @@ container.
 
 The first start creates `/data/config.ini`, initializes the MySQL schema,
 generates WriteFreely keys, and creates the admin user from
-`WRITEFREELY_ADMIN_USER` / `WRITEFREELY_ADMIN_PASSWORD`.
+`WRITEFREELY_ADMIN_USER` / `WRITEFREELY_ADMIN_PASSWORD`. Later starts reset
+that admin password from `.env` so the configured credentials remain usable.
+Do not use `admin` as the username; WriteFreely reserves it.
 
 Useful shortcuts:
 

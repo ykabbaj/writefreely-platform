@@ -138,6 +138,7 @@ env_value() {
 site_address="$(env_value CADDY_SITE_ADDRESS)"
 host_url="$(env_value WRITEFREELY_HOST)"
 admin_password="$(env_value WRITEFREELY_ADMIN_PASSWORD)"
+admin_user="$(env_value WRITEFREELY_ADMIN_USER)"
 mysql_password="$(env_value MYSQL_PASSWORD)"
 mysql_root_password="$(env_value MYSQL_ROOT_PASSWORD)"
 
@@ -150,6 +151,14 @@ fi
 case "$admin_password:$mysql_password:$mysql_root_password" in
 	*change-this*)
 		echo "Refusing deploy with default credentials in .env." >&2
+		exit 3
+		;;
+esac
+
+case "$admin_user" in
+	admin|Admin|ADMIN)
+		echo "Refusing deploy with reserved WriteFreely admin username: ${admin_user}" >&2
+		echo "Set WRITEFREELY_ADMIN_USER to a non-reserved username, such as owner." >&2
 		exit 3
 		;;
 esac

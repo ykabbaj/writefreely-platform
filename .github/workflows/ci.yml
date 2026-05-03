@@ -23,6 +23,7 @@ jobs:
         run: |
           sh -n docker/writefreely/entrypoint.sh
           sh -n scripts/init.sh
+          sh -n scripts/admin-bootstrap.sh
           sh -n scripts/backup.sh
           sh -n scripts/deploy.sh
           sh -n scripts/restore.sh
@@ -36,6 +37,7 @@ jobs:
           make -n backup
           make -n restore BACKUP=backups/example
           make -n restore-test
+          make -n admin-bootstrap
           make -n deploy
           make -n ansible-collections
           make -n ansible-setup
