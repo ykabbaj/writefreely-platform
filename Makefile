@@ -1,9 +1,10 @@
 COMPOSE ?= docker compose
+RELEASE_COMPOSE ?= docker compose -f docker-compose.yml -f docker-compose.release.yml
 DOCKER ?= docker
 BACKUP ?=
 BACKUP_REMOTE ?=
 
-.PHONY: init up down restart logs ps build smoke-test backup restore restore-test sync-backups config release-check shell db-shell theme-path
+.PHONY: init up down restart logs ps build smoke-test backup restore restore-test sync-backups config release-check release-up release-logs release-ps release-smoke-test release-backup release-restore release-restore-test shell db-shell theme-path
 
 init:
 	scripts/init.sh
@@ -43,6 +44,28 @@ release-check:
 	sh -n scripts/sync-backups.sh
 	$(MAKE) smoke-test
 	$(MAKE) restore-test
+
+release-up:
+	$(RELEASE_COMPOSE) up -d
+
+release-logs:
+	$(RELEASE_COMPOSE) logs -f --tail=200
+
+release-ps:
+	$(RELEASE_COMPOSE) ps
+
+release-smoke-test:
+	COMPOSE="$(RELEASE_COMPOSE)" scripts/smoke-test.sh
+
+release-backup:
+	COMPOSE="$(RELEASE_COMPOSE)" DOCKER="$(DOCKER)" scripts/backup.sh
+
+release-restore:
+	@if [ -z "$(BACKUP)" ]; then echo "Usage: make release-restore BACKUP=backups/<timestamp>"; exit 2; fi
+	COMPOSE="$(RELEASE_COMPOSE)" DOCKER="$(DOCKER)" BACKUP="$(BACKUP)" scripts/restore.sh
+
+release-restore-test:
+	COMPOSE="$(RELEASE_COMPOSE)" DOCKER="$(DOCKER)" scripts/restore-test.sh
 
 backup:
 	COMPOSE="$(COMPOSE)" DOCKER="$(DOCKER)" scripts/backup.sh

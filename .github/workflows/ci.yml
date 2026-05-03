@@ -34,6 +34,10 @@ jobs:
           make -n restore BACKUP=backups/example
           make -n restore-test
           make -n release-check
+          make -n release-up
+          make -n release-backup
+          make -n release-restore BACKUP=backups/example
+          make -n release-restore-test
           make -n smoke-test
           make -n sync-backups BACKUP_REMOTE=example:writefreely
 

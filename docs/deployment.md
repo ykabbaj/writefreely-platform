@@ -92,6 +92,14 @@ To deploy a published GHCR image instead of building on the host:
 GHCR_OWNER=your-github-user docker compose -f docker-compose.yml -f docker-compose.release.yml up -d
 ```
 
+The same release compose override is available through Make targets:
+
+```sh
+WRITEFREELY_IMAGE=ghcr.io/ykabbaj/writefreely-platform:v0.1.0 make release-up
+make release-ps
+make release-logs
+```
+
 Watch startup logs:
 
 ```sh
@@ -159,6 +167,12 @@ Run an end-to-end restore check:
 
 ```sh
 make restore-test
+```
+
+When validating the published GHCR image, run the release-aware restore test:
+
+```sh
+WRITEFREELY_IMAGE=ghcr.io/ykabbaj/writefreely-platform:v0.1.0 make release-restore-test
 ```
 
 The restore test uses a separate Compose project name and ports. It boots a

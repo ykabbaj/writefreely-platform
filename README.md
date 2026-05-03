@@ -59,6 +59,16 @@ To run from a published GHCR image instead of building locally:
 GHCR_OWNER=your-github-user docker compose -f docker-compose.yml -f docker-compose.release.yml up -d
 ```
 
+Or use the release-aware Make targets:
+
+```sh
+WRITEFREELY_IMAGE=ghcr.io/ykabbaj/writefreely-platform:v0.1.0 make release-up
+make release-smoke-test
+make release-backup
+make release-restore BACKUP=backups/20260502T120000Z
+make release-restore-test
+```
+
 You can start from one of the example profiles:
 
 ```sh

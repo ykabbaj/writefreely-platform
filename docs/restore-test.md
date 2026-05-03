@@ -7,6 +7,12 @@ The automated path runs against a disposable Compose project:
 make restore-test
 ```
 
+To test the published GHCR image instead of the local build definition:
+
+```sh
+WRITEFREELY_IMAGE=ghcr.io/ykabbaj/writefreely-platform:v0.1.0 make release-restore-test
+```
+
 Successful automated test backups are removed. Failed test backups are kept
 under `backups/restore-test/` so the failed state can be inspected.
 
@@ -17,6 +23,12 @@ on a separate host.
 
 ```sh
 make backup COMPOSE="sudo docker compose" DOCKER="sudo docker"
+```
+
+For a release-image deployment, use the matching release-aware target:
+
+```sh
+make release-backup
 ```
 
 Record the generated directory, for example:
@@ -44,6 +56,13 @@ sudo docker compose ps
 
 ```sh
 make restore BACKUP=backups/<timestamp> COMPOSE="sudo docker compose" DOCKER="sudo docker"
+```
+
+For a release-image deployment, use the matching release-aware target so the
+restored app starts from the published image:
+
+```sh
+make release-restore BACKUP=backups/<timestamp>
 ```
 
 ## Verify
