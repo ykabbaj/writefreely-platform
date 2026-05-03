@@ -1,4 +1,4 @@
-# Release Checklist
+## Release Checklist
 
 Use this before tagging or pushing operational changes.
 

@@ -1,4 +1,4 @@
-# WriteFreely Platform
+## WriteFreely Platform
 
 [![CI](../../actions/workflows/ci.yml/badge.svg)](../../actions/workflows/ci.yml)
 
@@ -17,11 +17,9 @@ flowchart LR
 
 ## What Is Here
 
-- `docker-compose.yml` is the root Compose entrypoint for the local/standalone
-  deployment.
+- `docker-compose.yml` is the root Compose entrypoint for the local/standalone deployment.
 - `docker/caddy/` contains the Caddy reverse proxy configuration.
-- `docker/writefreely/` contains the custom WriteFreely image and startup
-  entrypoint.
+- `docker/writefreely/` contains the custom WriteFreely image and startup entrypoint.
 - `scripts/` contains backup and restore helpers.
 - `docs/` contains production operations notes.
 - `assets/themes/` contains WriteFreely custom CSS themes.
@@ -111,6 +109,7 @@ See `docs/architecture.md` for the runtime and CI/CD design.
 See `docs/deployment.md` for a VPS deployment walkthrough.
 See `docs/vps.md` for VPS deployment notes.
 See `docs/ansible.md` for automated VPS setup.
+See `docs/local-checks.md` for checks to run before pushing.
 See `docs/security.md` for CI vulnerability scanning policy.
 See `docs/upgrade.md` before changing WriteFreely versions, and
 `docs/restore-test.md` for the restore verification procedure.

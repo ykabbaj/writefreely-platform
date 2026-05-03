@@ -5,8 +5,9 @@ DOCKER ?= docker
 BACKUP ?=
 BACKUP_REMOTE ?=
 ANSIBLE_INVENTORY ?= ansible/inventory.yml
+GOMARKLINT_VERSION ?= latest
 
-.PHONY: init up down restart logs ps build smoke-test backup restore restore-test sync-backups admin-bootstrap deploy ansible-collections ansible-setup config release-check dev-up dev-down dev-restart dev-build dev-smoke-test dev-backup dev-restore dev-restore-test shell db-shell theme-path
+.PHONY: init up down restart logs ps build smoke-test backup restore restore-test sync-backups admin-bootstrap deploy ansible-collections ansible-setup config lint lint-shell lint-dockerfile lint-yaml lint-markdown install-gomarklint ci-local release-check dev-up dev-down dev-restart dev-build dev-smoke-test dev-backup dev-restore dev-restore-test shell db-shell theme-path
 
 init:
 	scripts/init.sh
@@ -34,6 +35,38 @@ ps:
 
 config:
 	$(COMPOSE) config
+
+lint: lint-shell lint-dockerfile lint-yaml lint-markdown
+
+lint-shell:
+	shellcheck scripts/*.sh docker/writefreely/entrypoint.sh
+
+lint-dockerfile:
+	hadolint docker/writefreely/Dockerfile
+
+lint-yaml:
+	yamllint .github/workflows ansible docker-compose.yml .yamllint.yml .hadolint.yaml
+
+lint-markdown:
+	gomarklint
+
+install-gomarklint:
+	go install github.com/shinagawa-web/gomarklint@$(GOMARKLINT_VERSION)
+
+ci-local:
+	$(DEV_COMPOSE) config
+	$(RELEASE_COMPOSE) config
+	sh -n docker/writefreely/entrypoint.sh
+	sh -n scripts/init.sh
+	sh -n scripts/admin-bootstrap.sh
+	sh -n scripts/backup.sh
+	sh -n scripts/deploy.sh
+	sh -n scripts/restore.sh
+	sh -n scripts/restore-test.sh
+	sh -n scripts/smoke-test.sh
+	sh -n scripts/sync-backups.sh
+	$(MAKE) -n init backup restore BACKUP=backups/example restore-test admin-bootstrap deploy ansible-collections ansible-setup release-check dev-up dev-backup dev-restore BACKUP=backups/example dev-restore-test smoke-test sync-backups BACKUP_REMOTE=example:writefreely
+	$(MAKE) lint
 
 release-check:
 	$(DEV_COMPOSE) config

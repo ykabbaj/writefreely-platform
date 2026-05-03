@@ -1,4 +1,4 @@
-# Production Checklist
+## Production Checklist
 
 Use this checklist before exposing the Compose deployment to the public
 internet.
@@ -6,17 +6,13 @@ internet.
 ## Domain And HTTPS
 
 - Point the blog domain's `A` or `AAAA` record at the Docker host.
-- Set `CADDY_SITE_ADDRESS` to the public domain, for example
-  `blog.example.com`.
-- Set `WRITEFREELY_HOST` to the canonical HTTPS URL, for example
-  `https://blog.example.com`.
-- Confirm both values refer to the same host. WriteFreely uses
-  `WRITEFREELY_HOST` for post links.
+- Set `CADDY_SITE_ADDRESS` to the public domain, for example `blog.example.com`.
+- Set `WRITEFREELY_HOST` to the canonical HTTPS URL, for example `https://blog.example.com`.
+- Confirm both values refer to the same host. WriteFreely uses `WRITEFREELY_HOST` for post links.
 - Make sure inbound TCP `80` and `443` reach the Caddy container.
 - Keep UDP `443` open when possible so Caddy can serve HTTP/3.
 - Check Caddy logs after first boot to confirm certificate issuance.
-- Confirm HTTP response headers include HSTS and common browser hardening
-  headers.
+- Confirm HTTP response headers include HSTS and common browser hardening headers.
 
 ## Secrets
 
@@ -27,10 +23,8 @@ internet.
 - Use a long random `MYSQL_PASSWORD`.
 - Use a long random `WRITEFREELY_ADMIN_PASSWORD`.
 - Use `owner` or another non-reserved admin username. Do not use `admin`.
-- Keep any `GHCR_TOKEN` out of shell history where possible and rotate it after
-  troubleshooting private package pulls.
-- Review profile presets in `profiles/` before choosing registration,
-  federation, and privacy settings.
+- Keep any `GHCR_TOKEN` out of shell history where possible and rotate it after troubleshooting private package pulls.
+- Review profile presets in `profiles/` before choosing registration, federation, and privacy settings.
 
 ## Operations
 
@@ -43,8 +37,7 @@ internet.
 - Review `docs/restore-test.md` before testing disaster recovery.
 - Review `docs/deployment.md` before the first VPS deployment.
 - Review `docs/security.md` when CI reports image vulnerabilities.
-- Keep host packages patched. The Ansible role enables unattended upgrades on
-  Debian/Ubuntu hosts.
+- Keep host packages patched. The Ansible role enables unattended upgrades on Debian/Ubuntu hosts.
 
 ## Backups
 
@@ -80,7 +73,6 @@ make sync-backups BACKUP_REMOTE=backup-server:/srv/backups/writefreely
 - Read the WriteFreely release notes before changing `WRITEFREELY_VERSION`.
 - Run `make backup`.
 - Change `WRITEFREELY_VERSION` in `.env`.
-- Build and test local image changes with `make dev-build` and
-  `make dev-smoke-test`.
+- Build and test local image changes with `make dev-build` and `make dev-smoke-test`.
 - Publish a new image tag through CI, then deploy it with `make up`.
 - Check logs and the site before removing older backups.

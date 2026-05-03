@@ -2,8 +2,8 @@
 !.gitignore
 !.env.example
 !.dockerignore
+!.gomarklint.json
 !.hadolint.yaml
-!.markdownlint.yml
 !.yamllint.yml
 !.github/
 !.github/workflows/

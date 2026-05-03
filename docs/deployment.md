@@ -1,4 +1,4 @@
-# VPS Deployment
+## VPS Deployment
 
 This guide describes deploying WriteFreely Platform on a single Linux host with
 Docker Compose, Caddy, MySQL, backups, and restore checks.

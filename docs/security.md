@@ -1,4 +1,4 @@
-# Security Scanning
+## Security Scanning
 
 CI scans the custom source-built WriteFreely image with Trivy in two blocking
 passes.
@@ -8,12 +8,10 @@ passes.
 The Compose stack applies container and edge hardening where it is compatible
 with the upstream images:
 
-- Caddy sends HSTS, `nosniff`, clickjacking, referrer, and permissions-policy
-  headers.
+- Caddy sends HSTS, `nosniff`, clickjacking, referrer, and permissions-policy headers.
 - Caddy and WriteFreely drop Linux capabilities.
 - Caddy keeps only `NET_BIND_SERVICE` so it can bind `80` and `443`.
-- Caddy and WriteFreely run with read-only root filesystems and writable
-  `tmpfs` at `/tmp`.
+- Caddy and WriteFreely run with read-only root filesystems and writable `tmpfs` at `/tmp`.
 - Services use `no-new-privileges`.
 - MySQL stays on the internal network and is not published on host ports.
 - Backup directories are written with owner-only permissions.
@@ -60,5 +58,4 @@ Go release and rebuild the image.
 
 - Fixed OS package vulnerabilities: update the base image or package versions.
 - Fixed Go standard library vulnerabilities: update `GO_VERSION`.
-- Fixed WriteFreely dependency vulnerabilities: check for a newer WriteFreely
-  release or evaluate whether the dependency can be patched safely.
+- Fixed WriteFreely dependency vulnerabilities: check for a newer WriteFreely release or evaluate whether the dependency can be patched safely.

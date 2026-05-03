@@ -1,4 +1,4 @@
-# VPS Deployment Notes
+## VPS Deployment Notes
 
 This guide targets a small Linux VPS. The deployment uses the published GHCR
 image and runs Docker Compose directly on the host.

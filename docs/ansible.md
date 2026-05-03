@@ -1,4 +1,4 @@
-# Ansible Server Setup
+## Ansible Server Setup
 
 Use the Ansible playbook to prepare a fresh VPS before running `make deploy`.
 The role installs required packages, enables Docker, creates swap, opens the

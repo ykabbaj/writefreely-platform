@@ -41,6 +41,8 @@ jobs:
           make -n deploy
           make -n ansible-collections
           make -n ansible-setup
+          make -n lint
+          make -n ci-local
           make -n release-check
           make -n dev-up
           make -n dev-backup
@@ -70,13 +72,18 @@ jobs:
       - name: Run Yamllint
         uses: ibiqlik/action-yamllint@v3
         with:
-          file_or_dir: ".github/workflows ansible docker-compose.yml .markdownlint.yml .yamllint.yml .hadolint.yaml"
+          file_or_dir: ".github/workflows ansible docker-compose.yml .yamllint.yml .hadolint.yaml"
 
-      - name: Run Markdownlint
-        uses: DavidAnson/markdownlint-cli2-action@v18
+      - name: Set up Go for gomarklint
+        uses: actions/setup-go@v5
         with:
-          globs: |
-            **/*.md
+          go-version: stable
+
+      - name: Install gomarklint
+        run: go install github.com/shinagawa-web/gomarklint@latest
+
+      - name: Run gomarklint
+        run: gomarklint
 
   docker-build:
     name: Docker Build Smoke Test

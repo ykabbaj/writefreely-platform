@@ -1,4 +1,4 @@
-# Restore Test Procedure
+## Restore Test Procedure
 
 Use this to prove that backups can rebuild the blog from empty Docker volumes.
 The automated path runs against a disposable Compose project:

@@ -1,4 +1,4 @@
-# Upgrade Procedure
+## Upgrade Procedure
 
 Use this process when changing `WRITEFREELY_VERSION`, `GO_VERSION`, or any
 runtime dependency.
@@ -42,8 +42,7 @@ runtime dependency.
 
 ## Upgrade Local Image Build
 
-1. Change `WRITEFREELY_VERSION` in `.env`, or `GO_VERSION` in
-   `docker/writefreely/Dockerfile`.
+1. Change `WRITEFREELY_VERSION` in `.env`, or `GO_VERSION` in `docker/writefreely/Dockerfile`.
 2. Rebuild the app image:
 
    ```sh
@@ -79,8 +78,7 @@ runtime dependency.
    make dev-up
    ```
 
-3. If the upgrade changed data in a bad way, restore the backup taken before
-   the upgrade:
+3. If the upgrade changed data in a bad way, restore the backup taken before the upgrade:
 
    ```sh
    make restore BACKUP=backups/<timestamp> DOCKER="sudo docker"

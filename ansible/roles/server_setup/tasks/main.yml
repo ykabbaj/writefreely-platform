@@ -192,9 +192,9 @@
     port: "{{ item.port }}"
     proto: "{{ item.proto }}"
   loop:
-    - { port: "80", proto: tcp }
-    - { port: "443", proto: tcp }
-    - { port: "443", proto: udp }
+    - {port: "80", proto: tcp}
+    - {port: "443", proto: tcp}
+    - {port: "443", proto: udp}
   when:
     - server_setup_enable_firewall
     - ansible_os_family == "Debian"

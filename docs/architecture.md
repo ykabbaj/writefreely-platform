@@ -1,4 +1,4 @@
-# Architecture
+## Architecture
 
 WriteFreely Platform is a single-host Docker Compose deployment that builds and
 operates a WriteFreely blog behind Caddy with MySQL persistence.
@@ -18,10 +18,8 @@ flowchart LR
 
 ## Services
 
-- `caddy` terminates HTTPS, serves HTTP/3 when UDP `443` is reachable, and
-  reverse proxies to WriteFreely.
-- `writefreely` runs the source-built WriteFreely binary, performs first-boot
-  setup, runs migrations, and creates the configured admin account.
+- `caddy` terminates HTTPS, serves HTTP/3 when UDP `443` is reachable, and reverse proxies to WriteFreely.
+- `writefreely` runs the source-built WriteFreely binary, performs first-boot setup, runs migrations, and creates the configured admin account.
 - `db` stores WriteFreely data in MySQL.
 
 ## Network Boundaries
@@ -36,8 +34,7 @@ public network.
 ## Persistent Data
 
 - `mysql_data` stores database files.
-- `writefreely_data` stores `/data/config.ini`, generated keys, and
-  initialization markers.
+- `writefreely_data` stores `/data/config.ini`, generated keys, and initialization markers.
 - `caddy_data` stores Caddy certificates and runtime state.
 - `caddy_config` stores Caddy configuration state.
 
@@ -64,8 +61,7 @@ targets and plain `docker-compose.yml`.
 ## Startup Flow
 
 1. MySQL starts and reports healthy.
-2. WriteFreely waits for MySQL with TLS disabled to match its `tls = false`
-   database config.
+2. WriteFreely waits for MySQL with TLS disabled to match its `tls = false` database config.
 3. On first boot, WriteFreely writes `/data/config.ini`.
 4. It initializes the schema, generates keys, and runs migrations.
 5. It creates the configured admin account once.
@@ -94,7 +90,7 @@ Pull requests and pushes run:
 
 - Compose rendering checks.
 - Shell syntax checks.
-- ShellCheck, Hadolint, Yamllint, and Markdownlint.
+- ShellCheck, Hadolint, Yamllint, and gomarklint.
 - Docker image build.
 - Runtime smoke test.
 - Trivy OS and library scans.
