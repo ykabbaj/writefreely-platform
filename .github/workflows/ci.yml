@@ -51,7 +51,7 @@ jobs:
           additional_files: "docker/writefreely/entrypoint.sh"
 
       - name: Run Hadolint
-        uses: hadolint/hadolint-action@v3.1.0
+        uses: hadolint/hadolint-action@v3.3.0
         with:
           dockerfile: docker/writefreely/Dockerfile
 
