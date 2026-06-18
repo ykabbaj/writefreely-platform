@@ -42,7 +42,7 @@ jobs:
             org.opencontainers.image.description=Source-built WriteFreely image for the WriteFreely Platform deployment
 
       - name: Build image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: docker/writefreely/Dockerfile
@@ -88,7 +88,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: docker/writefreely/Dockerfile
